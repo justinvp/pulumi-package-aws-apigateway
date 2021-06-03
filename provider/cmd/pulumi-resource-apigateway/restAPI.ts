@@ -86,8 +86,8 @@ export class RestAPI extends pulumi.ComponentResource {
     constructor(name: string, args: RestAPIArgs, opts?: pulumi.ComponentResourceOptions) {
         super("apigateway:index:RestAPI", name, args, opts);
 
-        // TODO[pulumi/pulumi#7150]: Config doesn't work inside multi-lang components so we have to hardcode :-(
-        aws.config.region = "ap-southeast-2";
+        // TODO[pulumi/pulumi#7150]: aws.config doesn't work inside multi-lang components so we have to read it again.
+        aws.config.region = new pulumi.Config("aws").require("region") as aws.Region;
 
         // TODO[pulumi/pulumi#6957]: Ideally `routes` would be a plainInput so this `apply` wasn't needed.
         const api = pulumi.output(args.routes).apply(routes => {
